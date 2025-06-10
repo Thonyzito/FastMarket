@@ -1,3 +1,4 @@
+const sharp = require('sharp');
 const express = require('express');
 const multer = require('multer');
 const sqlite3 = require('sqlite3').verbose();
@@ -21,15 +22,41 @@ db.run(`CREATE TABLE IF NOT EXISTS imagenes (
 app.use(express.static(__dirname));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage,
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB max por imagen
+  fileFilter: (req, file, cb) => {
+    if (!['image/png', 'image/jpeg'].includes(file.mimetype)) {
+      return cb(new Error('Solo PNG/JPG permitidos'));
+    }
+    cb(null, true);
   }
 });
-const upload = multer({ storage });
+
+db.run(`
+CREATE TABLE IF NOT EXISTS pedidos_personalizados (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT,
+  direccion TEXT,
+  correo TEXT,
+  telefono TEXT,
+  tarjeta TEXT,
+  cvc TEXT,
+  vencimiento TEXT,
+  fecha TEXT
+)
+`);
+
+db.run(`
+CREATE TABLE IF NOT EXISTS imagenes_personalizados (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  pedido_id INTEGER,
+  filename TEXT,
+  FOREIGN KEY(pedido_id) REFERENCES pedidos_personalizados(id)
+)
+`);
+
 
 app.post('/subir', upload.single('foto'), (req, res) => {
   const filename = req.file.filename;
