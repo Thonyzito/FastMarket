@@ -58,13 +58,30 @@ CREATE TABLE IF NOT EXISTS imagenes_personalizados (
 `);
 
 
-app.post('/subir', upload.single('foto'), (req, res) => {
-  const filename = req.file.filename;
-  db.run('INSERT INTO imagenes(nombre) VALUES (?)', [filename], function(err) {
-    if (err) return res.status(500).send('Error al guardar en BD');
-    res.send({ url: '/uploads/' + filename });
-  });
+app.post('/subir', upload.single('foto'), async (req, res) => {
+  try {
+    const filename = Date.now() + '-' + req.file.originalname;
+    const outputPath = path.join(__dirname, 'uploads', filename);
+
+    const metadata = await sharp(req.file.buffer).metadata();
+    const resizeOptions = metadata.height >= metadata.width
+      ? { height: 800 }
+      : { width: Math.round((metadata.width * 800) / metadata.height) };
+
+    await sharp(req.file.buffer)
+      .resize(resizeOptions)
+      .toFile(outputPath);
+
+    db.run('INSERT INTO imagenes(nombre) VALUES (?)', [filename], function (err) {
+      if (err) return res.status(500).send('Error al guardar en BD');
+      res.send({ url: '/uploads/' + filename });
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al procesar imagen');
+  }
 });
+
 
 app.get('/admin', (req, res) => {
   db.all(`SELECT * FROM pedidos_personalizados ORDER BY id DESC`, [], (err, pedidos) => {
