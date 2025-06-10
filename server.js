@@ -40,8 +40,6 @@ app.get('/total', (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
-
 app.post('/subir', upload.single('foto'), (req, res) => {
   const filename = req.file.filename;
   db.run('INSERT INTO imagenes(nombre) VALUES (?)', [filename], function(err) {
@@ -50,5 +48,18 @@ app.post('/subir', upload.single('foto'), (req, res) => {
   });
 });
 
+app.get('/admin', (req, res) => {
+  db.all('SELECT * FROM imagenes ORDER BY id DESC', (err, rows) => {
+    if (err) return res.send('Error al cargar imágenes');
+    let html = '<h1>Imágenes subidas</h1>';
+    rows.forEach(img => {
+      html += `<img src="/uploads/${img.nombre}" style="max-width:200px;margin:10px">`;
+    });
+    res.send(html);
+  });
+});
 
+
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor en http://localhost:${PORT}`));
