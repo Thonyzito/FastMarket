@@ -109,14 +109,12 @@ const btnVaciar = document.getElementById('btnVaciar');
 
 let carrito = [];
 
-document.querySelectorAll('.producto button:not([id="btnSubirImg"])').forEach((btn, i) => {
+document.querySelectorAll('.producto button:not(#btnSubirImg):not(#btnAgregar)').forEach(btn => {
   btn.addEventListener('click', () => {
-    const nombre = btn.closest('.producto').querySelector('h2').innerText;
-    const precioText = btn.closest('.producto').querySelector('p').innerText;
-    carrito.push({ nombre, precio: precioText });
-    actualizarHUD();
+    window.location.href = 'https://pay.hotmart.com/Y100225121V?checkoutMode=10';
   });
 });
+
 
 function actualizarHUD() {
   if (carrito.length === 0) {
