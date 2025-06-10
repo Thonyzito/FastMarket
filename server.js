@@ -6,6 +6,11 @@ const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 const app = express();
 const db = new sqlite3.Database('ventas.db');
+db.run(`CREATE TABLE IF NOT EXISTS imagenes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT
+)`);
+
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
