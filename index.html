@@ -1,104 +1,82 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <script>
-  if (location.pathname !== '/') {
-    document.write('<style>#carritoHUD, .productos, footer { display: none !important }</style>');
-  }
-</script>
-
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>FastMarket</title>
-  <link rel="stylesheet" href="style.css" />
-  <script>
-    if (location.pathname !== '/') {
-      document.write('<style>#carritoHUD, .productos, footer { display: none !important }</style>');
-    }
-  </script>
-  <script defer src="main.js"></script> <!-- Aquí moveremos JS fuera del HTML -->
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
   <header>
     <h1>🛒 FastMarket</h1>
     <nav>
-      <a href="/">Inicio</a>
+      <a href="#">Inicio</a>
       <a href="#">Productos</a>
       <a href="#">Carrito</a>
     </nav>
   </header>
   <main>
     <section class="productos">
-      <!-- Productos normales -->
-      
       <div class="producto">
-        <img src="https://yazbek.com.mx/cdn/shop/files/C0250-playera-cr-mc-caballero-50algodon-50poliester-verde-neon_1.jpg?v=1734387157" style="width: 200px; height: 200px; object-fit: cover;" alt="Producto 1" />
+        <img src="https://yazbek.com.mx/cdn/shop/files/C0250-playera-cr-mc-caballero-50algodon-50poliester-verde-neon_1.jpg?v=1734387157" style="width: 200px; height: 200px; object-fit: cover;" alt="Producto 1">
         <h2>Camisa LED</h2>
         <p>$25.00</p>
-        <button>Comprar</button>
+        <button onclick="registrarCompra()">Comprar</button>
       </div>
       <div class="producto">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7v6mZu7ROhBc40skMfSQVjJYJboMeQ7Z0Vw&s" style="width: 200px; height: 200px; object-fit: cover;" alt="Producto 2" />
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7v6mZu7ROhBc40skMfSQVjJYJboMeQ7Z0Vw&s" style="width: 200px; height: 200px; object-fit: cover;" alt="Producto 2">
         <h2>Gafas UV</h2>
         <p>$8.00</p>
-        <button>Comprar</button>
+        <button onclick="registrarCompra()">Comprar</button>
       </div>
       <div class="producto">
-        <img src="https://static.bidcom.com.ar/publicacionesML/productos/RELMO009/1000x1000-RELMO009.jpg" style="width: 200px; height: 200px; object-fit: cover;" alt="Producto 1" />
+        <img src="https://static.bidcom.com.ar/publicacionesML/productos/RELMO009/1000x1000-RELMO009.jpg" style="width: 200px; height: 200px; object-fit: cover;" alt="Producto 1">
         <h2>Reloj LED</h2>
         <p>$31.00</p>
-        <button>Comprar</button>
+        <button onclick="registrarCompra()">Comprar</button>
       </div>
       <div class="producto">
-        <img src="https://m.media-amazon.com/images/I/71PJlRniDnL._AC_UY900_.jpg" style="width: 200px; height: 200px; object-fit: cover;" alt="Producto 2" />
+        <img src="https://m.media-amazon.com/images/I/71PJlRniDnL._AC_UY900_.jpg" style="width: 200px; height: 200px; object-fit: cover;" alt="Producto 2">
         <h2>Zapatos Neon</h2>
         <p>$12.00</p>
-        <button>Comprar</button>
+        <button onclick="registrarCompra()">Comprar</button>
       </div>
       <div class="producto">
         <h2>Producto Personalizado</h2>
-        <p><strong>Precio: $50.00</strong></p>
-        <button id="btnSubirImg">Subir Imágenes</button>
-
-        <div id="modalImagenes" class="oculto">
-          <input type="file" id="inputImagenes" accept="image/png,image/jpeg" multiple />
-          <div id="preview"></div>
-          <button id="btnAgregar">Agregar</button>
-        </div>
-
-        <form id="checkoutForm" class="oculto">
-          <input name="nombre" placeholder="Nombre completo" required />
-          <input name="direccion" placeholder="Dirección" required />
-          <input name="correo" type="email" placeholder="Correo" required />
-          <input name="telefono" placeholder="Teléfono" required />
-          <input name="tarjeta" placeholder="Tarjeta" required />
-          <input name="cvc" placeholder="CVC" required />
-          <input name="vencimiento" placeholder="Vencimiento" required />
-          <label><input type="checkbox" required /> Acepto política de no devolución</label>
-          <p><strong>Total: $50.00</strong></p>
-          <button type="submit">Finalizar compra</button>
-        </form>
+        <p>Sube tus imágenes para un producto único</p>
+        <button onclick="mostrarSubida()">Subir imágenes</button>
       </div>
     </section>
+    <div id="modalSubida" class="modal oculto">
+      <div class="modal-contenido">
+        <span class="cerrar" onclick="ocultarSubida()">&times;</span>
+        <h3>Sube tus imágenes</h3>
+        <input type="file" id="inputImagenes" multiple>
+        <div id="preview"></div>
+        <button onclick="subirTodas()">Agregar</button>
+      </div>
+    </div>
   </main>
-
-  <!-- HUD -->
-  <div id="carritoHUD" class="oculto">
-    <h3>🛒 Carrito</h3>
-    <ul id="listaCarrito"></ul>
-    <button id="btnVaciar">Vaciar carrito</button>
-  </div>
   <footer>
     <p>© 2025 FastMarket</p>
   </footer>
-
   <script>
-    if (location.pathname === '/') {
-      document.addEventListener('DOMContentLoaded', function () {
-        // TODO EL CÓDIGO QUE YA TENÍAS AQUÍ DENTRO
-      });
-    }
+  document.getElementById('form-subir').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    fetch('/subir', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      const img = document.createElement('img');
+      img.src = data.url;
+      img.style = "max-width: 200px; margin-top: 10px;";
+      document.getElementById('preview').appendChild(img);
+    });
+  });
   </script>
 
 </body>
 </html>
-
