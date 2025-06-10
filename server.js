@@ -136,43 +136,44 @@ app.post('/comprar-personalizado', upload.array('imagenes', 4), async (req, res)
     const fecha = new Date().toISOString();
 
     // Insertar pedido
-    const result = await new Promise((resolve, reject) => {
+    const pedidoId = await new Promise((resolve, reject) => {
       db.run(`INSERT INTO pedidos_personalizados 
         (nombre,direccion,correo,telefono,tarjeta,cvc,vencimiento,fecha) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [nombre, direccion, correo, telefono, tarjeta, cvc, vencimiento, fecha],
-        function(err) {
+        function (err) {
           if (err) reject(err);
           else resolve(this.lastID);
         });
     });
 
-    // Procesar y guardar imágenes con sharp, nombre único
+    // Procesar y guardar imágenes escaladas
     for (const file of req.files) {
       const filename = Date.now() + '-' + file.originalname;
-      // Redimensiona de forma que el **alto (height)** sea máximo 800px,
-      // manteniendo la proporción.
-      const image = sharp(file.buffer);
-      await sharp(originalPath)
-        .resize({ height: 800, withoutEnlargement: true })
-        .toFile(resizedPath);
-       image.toFile(path.join(__dirname, 'uploads', filename));
-            }
+      const outputPath = path.join(__dirname, 'uploads', filename);
 
+      const metadata = await sharp(file.buffer).metadata();
+      const resizeOptions = metadata.height >= metadata.width
+        ? { height: 800 }
+        : { width: Math.round((metadata.width * 800) / metadata.height) };
 
-      // Guardar registro imagen
+      await sharp(file.buffer)
+        .resize(resizeOptions)
+        .toFile(outputPath);
+
       await new Promise((resolve, reject) => {
         db.run(`INSERT INTO imagenes_personalizados (pedido_id, filename) VALUES (?, ?)`,
-          [result, filename], err => err ? reject(err) : resolve());
+          [pedidoId, filename], err => err ? reject(err) : resolve());
       });
     }
 
     res.json({ success: true });
   } catch (error) {
     console.error(error);
-    res.json({ success: false });
+    res.status(500).json({ success: false });
   }
 });
+
 
 app.get('/api/pedidos-personalizados', (req, res) => {
   db.all('SELECT * FROM pedidos_personalizados ORDER BY id DESC', (err, pedidos) => {
