@@ -43,7 +43,12 @@ app.get('/total', (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.post('/subir', upload.single('foto'), (req, res) => {
-  res.send({ url: '/uploads/' + req.file.filename });
+  const filename = req.file.filename;
+  db.run('INSERT INTO imagenes(nombre) VALUES (?)', [filename], function(err) {
+    if (err) return res.status(500).send('Error al guardar en BD');
+    res.send({ url: '/uploads/' + filename });
+  });
 });
+
 
 app.listen(PORT, () => console.log(`Servidor en http://localhost:${PORT}`));
