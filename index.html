@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <script>
+  if (location.pathname !== '/') {
+    document.write('<style>#carritoHUD, .productos, footer { display: none !important }</style>');
+  }
+</script>
+
   <meta charset="UTF-8" />
   <title>FastMarket</title>
   <link rel="stylesheet" href="style.css" />
@@ -85,6 +91,15 @@
   <footer>
     <p>© 2025 FastMarket</p>
   </footer>
+
+  <script>
+    if (location.pathname === '/') {
+      document.addEventListener('DOMContentLoaded', function () {
+        // TODO EL CÓDIGO QUE YA TENÍAS AQUÍ DENTRO
+      });
+    }
+  </script>
+
 </body>
 </html>
 
