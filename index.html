@@ -41,16 +41,21 @@
         <p>$12.00</p>
         <button onclick="registrarCompra()">Comprar</button>
       </div>
+      <div class="producto">
+        <h2>Producto Personalizado</h2>
+        <p>Sube tus imágenes para un producto único</p>
+        <button onclick="mostrarSubida()">Subir imágenes</button>
+      </div>
     </section>
-    <section class="subida">
-      <h2>Subir Imagen</h2>
-      <form id="form-subir" enctype="multipart/form-data">
-        <input type="file" name="foto" accept="image/*" required>
-        <button type="submit">Subir</button>
-      </form>
-      <div id="preview"></div>
-    </section>
-    <div id="contador">Ventas: cargando...</div>
+    <div id="modalSubida" class="modal oculto">
+      <div class="modal-contenido">
+        <span class="cerrar" onclick="ocultarSubida()">&times;</span>
+        <h3>Sube tus imágenes</h3>
+        <input type="file" id="inputImagenes" multiple>
+        <div id="preview"></div>
+        <button onclick="subirTodas()">Agregar</button>
+      </div>
+    </div>
   </main>
   <footer>
     <p>© 2025 FastMarket</p>
