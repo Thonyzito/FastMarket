@@ -119,5 +119,32 @@ app.post('/comprar-personalizado', upload.array('imagenes', 4), async (req, res)
   }
 });
 
+app.get('/api/pedidos-personalizados', (req, res) => {
+  db.all('SELECT * FROM pedidos_personalizados ORDER BY id DESC', (err, pedidos) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    const pedidosConImgs = [];
+
+    let count = 0;
+    pedidos.forEach(pedido => {
+      db.all('SELECT * FROM imagenes_personalizados WHERE pedido_id = ?', [pedido.id], (err, imgs) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        pedidosConImgs.push({
+          ...pedido,
+          imagenes: imgs
+        });
+
+        count++;
+        if (count === pedidos.length) {
+          res.json(pedidosConImgs);
+        }
+      });
+    });
+
+    if (pedidos.length === 0) res.json([]);
+  });
+});
+
 
 app.listen(PORT, () => console.log("Servidor funcionando en puerto " + PORT));
