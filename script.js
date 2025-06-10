@@ -1,17 +1,35 @@
-function registrarCompra() {
-  fetch('/comprar', { method: 'POST' })
-    .then(() => actualizarContador());
+function mostrarSubida() {
+  document.getElementById('modalSubida').classList.remove('oculto');
 }
-function actualizarContador() {
-  fetch('/total')
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('contador').textContent = 'Ventas: ' + data.total;
+function ocultarSubida() {
+  document.getElementById('modalSubida').classList.add('oculto');
+  document.getElementById('preview').innerHTML = '';
+}
+function subirTodas() {
+  const files = document.getElementById('inputImagenes').files;
+  if (!files.length) return;
+  [...files].forEach(file => {
+    const formData = new FormData();
+    formData.append('foto', file);
+    fetch('/subir', {
+      method: 'POST',
+      body: formData
+    }).then(res => res.json()).then(data => {
+      console.log('Subido:', data.url);
     });
+  });
+  ocultarSubida();
 }
-document.addEventListener('DOMContentLoaded', actualizarContador);
-document.querySelectorAll("button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    alert("Producto agregado al carrito (ficticio)");
+document.getElementById('inputImagenes').addEventListener('change', (e) => {
+  const preview = document.getElementById('preview');
+  preview.innerHTML = '';
+  [...e.target.files].forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
   });
 });
