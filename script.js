@@ -101,3 +101,45 @@ checkoutForm.addEventListener('submit', async e => {
     alert('Error en la petición.');
   }
 });
+
+// Carrito HUD
+const carritoHUD = document.getElementById('carritoHUD');
+const listaCarrito = document.getElementById('listaCarrito');
+const btnVaciar = document.getElementById('btnVaciar');
+
+let carrito = [];
+
+document.querySelectorAll('.producto button:not([id="btnSubirImg"])').forEach((btn, i) => {
+  btn.addEventListener('click', () => {
+    const nombre = btn.closest('.producto').querySelector('h2').innerText;
+    const precioText = btn.closest('.producto').querySelector('p').innerText;
+    carrito.push({ nombre, precio: precioText });
+    actualizarHUD();
+  });
+});
+
+function actualizarHUD() {
+  if (carrito.length === 0) {
+    carritoHUD.classList.add('oculto');
+    return;
+  }
+  carritoHUD.classList.remove('oculto');
+  listaCarrito.innerHTML = '';
+  carrito.forEach((item, idx) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <span>${item.nombre}</span>
+      <span>${item.precio}</span>
+      <button onclick="quitarCarrito(${idx})">×</button>`;
+    listaCarrito.appendChild(li);
+  });
+}
+
+window.quitarCarrito = function(i) {
+  carrito.splice(i, 1);
+  actualizarHUD();
+};
+btnVaciar.addEventListener('click', () => {
+  carrito = [];
+  actualizarHUD();
+});
