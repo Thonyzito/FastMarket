@@ -67,15 +67,41 @@ app.post('/subir', upload.single('foto'), (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-  db.all('SELECT * FROM imagenes ORDER BY id DESC', (err, rows) => {
-    if (err) return res.send('Error al cargar imágenes');
-    let html = '<h1>Imágenes subidas</h1>';
-    rows.forEach(img => {
-      html += `<img src="/uploads/${img.nombre}" style="max-width:200px;margin:10px">`;
+  db.all('SELECT * FROM ventas ORDER BY timestamp DESC', [], (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send('Error al obtener los datos');
+    }
+
+    let html = `
+    <html><head>
+    <meta charset="UTF-8"><title>Panel Admin</title>
+    <style>
+      body { background: #111; color: #0f0; font-family: sans-serif; }
+      .compra { border: 1px solid #0f0; margin: 1em; padding: 1em; border-radius: 10px; }
+      img { max-width: 150px; margin: 5px; border-radius: 8px; }
+    </style></head><body><h1>🛠️ Admin Panel</h1>
+    `;
+
+    rows.forEach(row => {
+      const imagenes = JSON.parse(row.imagenes).map(img =>
+        `<img src="/uploads/${img}" alt="Imagen subida">`).join('');
+      html += `
+        <div class="compra">
+          <p><strong>Nombre:</strong> ${row.nombre}</p>
+          <p><strong>Correo:</strong> ${row.correo}</p>
+          <p><strong>Teléfono:</strong> ${row.telefono}</p>
+          <p><strong>Dirección:</strong> ${row.direccion}</p>
+          <p><strong>Precio:</strong> ${row.precio}</p>
+          <div>${imagenes}</div>
+        </div>`;
     });
+
+    html += `</body></html>`;
     res.send(html);
   });
 });
+
 
 app.post('/comprar-personalizado', upload.array('imagenes', 4), async (req, res) => {
   try {
