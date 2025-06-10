@@ -131,9 +131,11 @@ function actualizarHUD() {
       <span>${item.nombre}</span>
       <span>${item.precio}</span>
       <button onclick="quitarCarrito(${idx})" style="margin-left:10px; background:red; color:white; border:none;">Eliminar</button>
+    `;  // <- cerrar aquí el template literal
     listaCarrito.appendChild(li);
   });
 }
+
 
 window.quitarCarrito = function(i) {
   carrito.splice(i, 1);
