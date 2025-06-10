@@ -153,12 +153,11 @@ app.post('/comprar-personalizado', upload.array('imagenes', 4), async (req, res)
       // Redimensiona de forma que el **alto (height)** sea máximo 800px,
       // manteniendo la proporción.
       const image = sharp(file.buffer);
-      const meta = await image.metadata();
-      if (meta.height > 800) {
-        await image.resize({ height: 800 }).toFile(path.join(__dirname, 'uploads', filename));
-      } else {
-        await image.toFile(path.join(__dirname, 'uploads', filename));
-      }
+      await sharp(originalPath)
+        .resize({ height: 800, withoutEnlargement: true })
+        .toFile(resizedPath);
+       image.toFile(path.join(__dirname, 'uploads', filename));
+            }
 
 
       // Guardar registro imagen
