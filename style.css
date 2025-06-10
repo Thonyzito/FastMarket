@@ -1,31 +1,27 @@
+
 body {
   margin: 0;
   font-family: 'Orbitron', sans-serif;
   background-color: #0a0a0a;
   color: #00ffff;
 }
-
 header {
   background: #111;
   padding: 1em;
   text-align: center;
   border-bottom: 2px solid #00ffcc;
 }
-
 nav a {
   margin: 0 1em;
   text-decoration: none;
   color: #ff00ff;
 }
-
 .productos {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
   gap: 2em;
   padding: 2em;
 }
-
 .producto {
   background: #1a1a1a;
   padding: 1em;
@@ -34,12 +30,10 @@ nav a {
   text-align: center;
   transition: 0.3s;
 }
-
 .producto:hover {
   transform: scale(1.05);
   border-color: #ff00ff;
 }
-
 button {
   margin-top: 1em;
   background: #00ffff;
@@ -49,19 +43,38 @@ button {
   font-weight: bold;
   cursor: pointer;
 }
-
 button:hover {
   background: #ff00ff;
   color: white;
 }
-
 footer {
   text-align: center;
   padding: 1em;
   border-top: 2px solid #00ffcc;
   background: #111;
 }
-
+body {
+  background-color: #111;
+  color: #eee;
+  font-family: sans-serif;
+}
+.productos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.producto {
+  background: #222;
+  padding: 15px;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+button {
+  background-color: #0ff;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+}
 .modal {
   position: fixed;
   top: 0; left: 0;
@@ -71,89 +84,15 @@ footer {
   justify-content: center;
   align-items: center;
 }
-
 .modal-contenido {
   background: #222;
   padding: 20px;
   border-radius: 8px;
 }
-
-.oculto { display: none; }
-
-#modalImagenes {
-  background: #111;
-  border: 2px solid #0ff;
-  padding: 10px;
-  margin-top: 10px;
-}
-
-#preview img {
-  width: 100px;
-  height: 100px;
-  margin: 5px;
-  object-fit: cover;
-  border: 1px solid #0ff;
-}
-
-#checkoutForm {
-  margin-top: 15px;
-  background: #222;
-  padding: 15px;
-  border: 2px solid #0ff;
-  color: #0ff;
-  max-width: 400px;
-}
-
-#checkoutForm input, #checkoutForm label {
-  display: block;
-  margin-bottom: 10px;
-  width: 100%;
-  background: #111;
-  border: 1px solid #0ff;
-  color: #0ff;
-  padding: 5px;
-}
-
-#checkoutForm button {
-  background: #0ff;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #000;
-}
-
-/* CARRITO HUD */
-#carritoHUD {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #222;
-  border: 2px solid #0ff;
-  padding: 15px;
-  color: #0ff;
-  max-width: 300px;
+.oculto {
   display: none;
-  z-index: 999;
 }
-
-#carritoHUD.oculto { display: none; }
-
-#carritoHUD ul {
-  list-style: none;
-  padding: 0;
-}
-
-#carritoHUD li {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-}
-
-#carritoHUD button {
-  background: #0ff;
-  color: #000;
-  border: none;
-  padding: 5px;
-  cursor: pointer;
+#preview img {
+  max-height: 100px;
+  margin: 5px;
 }
