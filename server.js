@@ -4,7 +4,6 @@ const path = require('path');
 const fs = require('fs');
 
 const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
 const app = express();
 const db = new sqlite3.Database('ventas.db');
 const uploadDir = path.join(__dirname, 'uploads');
