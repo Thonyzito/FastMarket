@@ -77,4 +77,47 @@ app.get('/admin', (req, res) => {
   });
 });
 
+app.post('/comprar-personalizado', upload.array('imagenes', 4), async (req, res) => {
+  try {
+    const {
+      nombre, direccion, correo, telefono,
+      tarjeta, cvc, vencimiento
+    } = req.body;
+
+    const fecha = new Date().toISOString();
+
+    // Insertar pedido
+    const result = await new Promise((resolve, reject) => {
+      db.run(`INSERT INTO pedidos_personalizados 
+        (nombre,direccion,correo,telefono,tarjeta,cvc,vencimiento,fecha) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [nombre, direccion, correo, telefono, tarjeta, cvc, vencimiento, fecha],
+        function(err) {
+          if (err) reject(err);
+          else resolve(this.lastID);
+        });
+    });
+
+    // Procesar y guardar imágenes con sharp, nombre único
+    for (const file of req.files) {
+      const filename = Date.now() + '-' + file.originalname;
+      await sharp(file.buffer)
+        .resize({ width: 800, height: 800, fit: 'inside' })
+        .toFile(path.join(__dirname, 'uploads', filename));
+
+      // Guardar registro imagen
+      await new Promise((resolve, reject) => {
+        db.run(`INSERT INTO imagenes_personalizados (pedido_id, filename) VALUES (?, ?)`,
+          [result, filename], err => err ? reject(err) : resolve());
+      });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false });
+  }
+});
+
+
 app.listen(PORT, () => console.log("Servidor funcionando en puerto " + PORT));
