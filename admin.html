@@ -1,0 +1,30 @@
+<h2>Pedidos Personalizados</h2>
+<div id="pedidosPersonalizados"></div>
+
+<script>
+fetch('/api/pedidos-personalizados')
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById('pedidosPersonalizados');
+    data.forEach(pedido => {
+      const div = document.createElement('div');
+      div.style.border = '2px solid #0ff';
+      div.style.margin = '10px';
+      div.style.padding = '10px';
+      div.style.background = '#111';
+      div.style.color = '#0ff';
+
+      div.innerHTML = `
+        <p><strong>Nombre:</strong> ${pedido.nombre}</p>
+        <p><strong>Correo:</strong> ${pedido.correo}</p>
+        <p><strong>Dirección:</strong> ${pedido.direccion}</p>
+        <p><strong>Teléfono:</strong> ${pedido.telefono}</p>
+        <p><strong>Fecha:</strong> ${pedido.fecha}</p>
+        <div style="display:flex; gap:10px; flex-wrap: wrap;">
+          ${pedido.imagenes.map(img => `<img src="/uploads/${img.filename}" style="width:100px; height:100px; object-fit:cover;">`).join('')}
+        </div>
+      `;
+      container.appendChild(div);
+    });
+  });
+</script>
