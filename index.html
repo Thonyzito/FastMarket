@@ -4,102 +4,26 @@
   <meta charset="UTF-8" />
   <title>FastMarket</title>
   <link rel="stylesheet" href="style.css" />
-  <script defer>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Carrito
-      const carritoHUD = document.getElementById('carritoHUD');
-      const listaCarrito = document.getElementById('listaCarrito');
-      const btnVaciar = document.getElementById('btnVaciar');
-      let carrito = [];
-
-      document.querySelectorAll('.producto button:not(#btnSubirImg):not(#btnAgregar)').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const producto = btn.closest('.producto');
-          const nombre = producto.querySelector('h2').innerText;
-          const precioText = producto.querySelector('p').innerText;
-          carrito.push({ nombre, precio: precioText });
-          actualizarHUD();
-        });
-      });
-
-      function actualizarHUD() {
-        if (carrito.length === 0) {
-          carritoHUD.classList.add('oculto');
-          return;
-        }
-        carritoHUD.classList.remove('oculto');
-        listaCarrito.innerHTML = '';
-        carrito.forEach((item, idx) => {
-          const li = document.createElement('li');
-          li.innerHTML = `
-            <span>${item.nombre}</span>
-            <span>${item.precio}</span>
-            <button onclick="quitarCarrito(${idx})">×</button>`;
-          listaCarrito.appendChild(li);
-        });
-      }
-
-      window.quitarCarrito = function (i) {
-        carrito.splice(i, 1);
-        actualizarHUD();
-      };
-
-      btnVaciar.addEventListener('click', () => {
-        carrito = [];
-        actualizarHUD();
-      });
-
-      // Modal subir imágenes
-      const btnSubirImg = document.getElementById('btnSubirImg');
-      const modalImagenes = document.getElementById('modalImagenes');
-      const inputImagenes = document.getElementById('inputImagenes');
-      const preview = document.getElementById('preview');
-      const btnAgregar = document.getElementById('btnAgregar');
-      const checkoutForm = document.getElementById('checkoutForm');
-
-      btnSubirImg.addEventListener('click', () => {
-        modalImagenes.classList.toggle('oculto');
-      });
-
-      btnAgregar.addEventListener('click', () => {
-        preview.innerHTML = ''; // limpiar
-        const files = inputImagenes.files;
-        if (!files.length) {
-          alert('Selecciona al menos una imagen');
-          return;
-        }
-        for (let i = 0; i < files.length; i++) {
-          const img = document.createElement('img');
-          img.src = URL.createObjectURL(files[i]);
-          img.style.width = '100px';
-          img.style.height = '100px';
-          img.style.objectFit = 'cover';
-          img.style.margin = '5px';
-          preview.appendChild(img);
-        }
-        checkoutForm.classList.remove('oculto');
-      });
-
-      // Enviar formulario (puedes ajustar fetch según backend)
-      checkoutForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        alert('Funcionalidad de compra personalizada pendiente de backend');
-        // Aquí enviar datos + imágenes a backend
-      });
-    });
+  <script>
+    if (location.pathname !== '/') {
+      document.write('<style>#carritoHUD, .productos, footer { display: none !important }</style>');
+    }
   </script>
+  <script defer src="main.js"></script> <!-- Aquí moveremos JS fuera del HTML -->
 </head>
 <body>
   <header>
     <h1>🛒 FastMarket</h1>
     <nav>
-      <a href="#">Inicio</a>
+      <a href="/">Inicio</a>
       <a href="#">Productos</a>
       <a href="#">Carrito</a>
     </nav>
   </header>
   <main>
     <section class="productos">
+      <!-- Productos normales -->
+      
       <div class="producto">
         <img src="https://yazbek.com.mx/cdn/shop/files/C0250-playera-cr-mc-caballero-50algodon-50poliester-verde-neon_1.jpg?v=1734387157" style="width: 200px; height: 200px; object-fit: cover;" alt="Producto 1" />
         <h2>Camisa LED</h2>
@@ -124,19 +48,18 @@
         <p>$12.00</p>
         <button>Comprar</button>
       </div>
-      <!-- Producto personalizado -->
       <div class="producto">
         <h2>Producto Personalizado</h2>
         <p><strong>Precio: $50.00</strong></p>
         <button id="btnSubirImg">Subir Imágenes</button>
 
-        <div id="modalImagenes" class="oculto" style="margin-top:10px;">
+        <div id="modalImagenes" class="oculto">
           <input type="file" id="inputImagenes" accept="image/png,image/jpeg" multiple />
-          <div id="preview" style="display:flex; flex-wrap:wrap;"></div>
+          <div id="preview"></div>
           <button id="btnAgregar">Agregar</button>
         </div>
 
-        <form id="checkoutForm" class="oculto" style="margin-top:10px;">
+        <form id="checkoutForm" class="oculto">
           <input name="nombre" placeholder="Nombre completo" required />
           <input name="direccion" placeholder="Dirección" required />
           <input name="correo" type="email" placeholder="Correo" required />
@@ -151,13 +74,17 @@
       </div>
     </section>
   </main>
-  <div id="carritoHUD" class="oculto" style="position:fixed; top:90px; right:20px; background:#111; color:#0f0; padding:10px; border-radius:10px; z-index:999; width:250px; box-shadow:0 0 10px #0f0;">
+
+  <!-- HUD -->
+  <div id="carritoHUD" class="oculto">
     <h3>🛒 Carrito</h3>
-    <ul id="listaCarrito" style="list-style:none; padding:0;"></ul>
-    <button id="btnVaciar" style="margin-top:10px;">Vaciar carrito</button>
+    <ul id="listaCarrito"></ul>
+    <button id="btnVaciar">Vaciar carrito</button>
   </div>
+
   <footer>
     <p>© 2025 FastMarket</p>
   </footer>
 </body>
 </html>
+
