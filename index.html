@@ -46,15 +46,33 @@
         <p>Sube tus imágenes para un producto único</p>
         <button onclick="mostrarSubida()">Subir imágenes</button>
       </div>
-    </section>
-    <div id="modalSubida" class="modal oculto">
-      <div class="modal-contenido">
-        <span class="cerrar" onclick="ocultarSubida()">&times;</span>
-        <h3>Sube tus imágenes</h3>
-        <input type="file" id="inputImagenes" multiple>
-        <div id="preview"></div>
-        <button onclick="subirTodas()">Agregar</button>
+      <!-- Producto personalizado -->
+      <div class="producto">
+        <h2>Producto Personalizado</h2>
+        <p><strong>Precio: $50.00</strong></p>
+        <button id="btnSubirImg">Subir Imágenes</button>
+      
+        <div id="modalImagenes" class="oculto">
+          <input type="file" id="inputImagenes" accept="image/png,image/jpeg" multiple>
+          <div id="preview"></div>
+          <button id="btnAgregar">Agregar</button>
+        </div>
+      
+        <form id="checkoutForm" class="oculto">
+          <input name="nombre" placeholder="Nombre completo" required>
+          <input name="direccion" placeholder="Dirección" required>
+          <input name="correo" type="email" placeholder="Correo" required>
+          <input name="telefono" placeholder="Teléfono" required>
+          <input name="tarjeta" placeholder="Tarjeta" required>
+          <input name="cvc" placeholder="CVC" required>
+          <input name="vencimiento" placeholder="Vencimiento" required>
+          <label><input type="checkbox" required> Acepto política de no devolución</label>
+          <p><strong>Total: $50.00</strong></p>
+          <button type="submit">Finalizar compra</button>
+        </form>
       </div>
+
+    </section>    
     </div>
   </main>
   <footer>
