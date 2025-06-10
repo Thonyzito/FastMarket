@@ -5,6 +5,13 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const fs = require('fs');
+
+// Crear carpeta 'uploads' si no existe
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads');
+}
+
 const db = new sqlite3.Database('ventas.db');
 db.run(`CREATE TABLE IF NOT EXISTS imagenes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
