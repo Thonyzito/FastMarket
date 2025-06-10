@@ -20,16 +20,16 @@ function subirTodas() {
   });
   ocultarSubida();
 }
-document.getElementById('inputImagenes').addEventListener('change', (e) => {
-  const preview = document.getElementById('preview');
+// Al cambiar imágenes en input
+input.addEventListener('change', e => {
+  const files = e.target.files;
+  if (files.length > 4) alert('Máximo 4 imágenes');
   preview.innerHTML = '';
-  [...e.target.files].forEach(file => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = document.createElement('img');
-      img.src = e.target.result;
-      preview.appendChild(img);
-    };
-    reader.readAsDataURL(file);
+  [...files].forEach(file => {
+    if (!['image/png','image/jpeg'].includes(file.type)) return alert('Formato no válido');
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    img.width = 100; img.height = 100;
+    preview.appendChild(img);
   });
 });
