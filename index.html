@@ -70,30 +70,31 @@
     </section>    
     </div>
   </main>
-  <footer>
-    <p>© 2025 FastMarket</p>
-  </footer>
-  <script>
-  document.getElementById('form-subir').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    fetch('/subir', {
-      method: 'POST',
-      body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-      const img = document.createElement('img');
-      img.src = data.url;
-      img.style = "max-width: 200px; margin-top: 10px;";
-      document.getElementById('preview').appendChild(img);
-    });
-  });
-  </script>
   <div id="carritoHUD" class="oculto" style="position:fixed; top:90px; right:20px; background:#111; color:#0f0; padding:10px; border-radius:10px; z-index:999; width:250px; box-shadow:0 0 10px #0f0;">
     <h3>🛒 Carrito</h3>
     <ul id="listaCarrito" style="list-style:none; padding:0;"></ul>
     <button id="btnVaciar" style="margin-top:10px;">Vaciar carrito</button>
   </div>
+  <footer>
+    <p>© 2025 FastMarket</p>
+  </footer>
+  <script>
+    document.getElementById('form-subir').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      fetch('/subir', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        const img = document.createElement('img');
+        img.src = data.url;
+        img.style = "max-width: 200px; margin-top: 10px;";
+        document.getElementById('preview').appendChild(img);
+      });
+    });
+  </script>
+  
 </body>
 </html>
