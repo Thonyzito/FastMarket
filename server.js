@@ -67,40 +67,63 @@ app.post('/subir', upload.single('foto'), (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-  db.all('SELECT * FROM ventas ORDER BY timestamp DESC', [], (err, rows) => {
+  db.all(`SELECT * FROM pedidos_personalizados ORDER BY id DESC`, [], (err, pedidos) => {
     if (err) {
-      console.error(err.message);
-      return res.status(500).send('Error al obtener los datos');
+      console.error(err);
+      return res.status(500).send('Error al obtener los pedidos');
     }
 
-    let html = `
-    <html><head>
-    <meta charset="UTF-8"><title>Panel Admin</title>
-    <style>
-      body { background: #111; color: #0f0; font-family: sans-serif; }
-      .compra { border: 1px solid #0f0; margin: 1em; padding: 1em; border-radius: 10px; }
-      img { max-width: 150px; margin: 5px; border-radius: 8px; }
-    </style></head><body><h1>🛠️ Admin Panel</h1>
-    `;
+    // Traer imágenes asociadas
+    db.all(`SELECT * FROM imagenes_personalizados`, [], (err2, imagenes) => {
+      if (err2) {
+        console.error(err2);
+        return res.status(500).send('Error al obtener las imágenes');
+      }
 
-    rows.forEach(row => {
-      const imagenes = JSON.parse(row.imagenes).map(img =>
-        `<img src="/uploads/${img}" alt="Imagen subida">`).join('');
-      html += `
-        <div class="compra">
-          <p><strong>Nombre:</strong> ${row.nombre}</p>
-          <p><strong>Correo:</strong> ${row.correo}</p>
-          <p><strong>Teléfono:</strong> ${row.telefono}</p>
-          <p><strong>Dirección:</strong> ${row.direccion}</p>
-          <p><strong>Precio:</strong> ${row.precio}</p>
-          <div>${imagenes}</div>
-        </div>`;
+      // Asociar imágenes a pedidos
+      const pedidosConImagenes = pedidos.map(pedido => {
+        const imgs = imagenes.filter(img => img.pedido_id === pedido.id);
+        return {
+          ...pedido,
+          imagenes: imgs
+        };
+      });
+
+      // Construir HTML de la vista admin
+      const html = `
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <title>Panel Admin</title>
+        <style>
+          body { background-color: #111; color: #fff; font-family: sans-serif; padding: 20px; }
+          .pedido { background: #222; padding: 20px; margin-bottom: 20px; border-radius: 10px; }
+          .imagenes { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+          .imagenes img { width: 150px; height: auto; border-radius: 5px; }
+        </style>
+      </head>
+      <body>
+        <h1>🧾 Pedidos Personalizados</h1>
+        ${pedidosConImagenes.map(pedido => `
+          <div class="pedido">
+            <p><strong>Nombre:</strong> ${pedido.nombre}</p>
+            <p><strong>Dirección:</strong> ${pedido.direccion}</p>
+            <p><strong>Correo:</strong> ${pedido.correo}</p>
+            <p><strong>Teléfono:</strong> ${pedido.telefono}</p>
+            <p><strong>Fecha:</strong> ${pedido.fecha}</p>
+            <div class="imagenes">
+              ${pedido.imagenes.map(img => `<img src="/uploads/${img.filename}" alt="Imagen">`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </body>
+      </html>
+      `;
+      res.send(html);
     });
-
-    html += `</body></html>`;
-    res.send(html);
   });
 });
+
 
 
 app.post('/comprar-personalizado', upload.array('imagenes', 4), async (req, res) => {
